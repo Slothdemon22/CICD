@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (_req, res) => {
-  res.send('🚀 Express + TypeScript + CORS server is running');
+  res.send('🚀 Express + TypeScript + CORS server is running updated');
 });
 
 // ✅ This will keep Node running
