@@ -1,4 +1,4 @@
-name: 🚀 Deploy to Staging (Reliable SSH)
+name: 🚀 Staging Deployment
 
 on:
   push:
@@ -10,20 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout code
+      - name: ⬇️ Checkout Code
         uses: actions/checkout@v3
 
-      - name: 🛜 Setup SSH and Deploy
-        uses: marvinpinto/action-ssh@v1.0.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-          ssh-public-key: ""
-          ssh-host: ubuntu@3.25.103.227
-          ssh-port: 22
-          ssh-command: |
+      - name: 🔐 Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 3.25.103.227 >> ~/.ssh/known_hosts
+
+      - name: 🚀 SSH & Deploy to Staging
+        run: |
+          ssh ubuntu@3.25.103.227 << 'EOF'
             cd /home/ubuntu/CICD
             git pull origin main
             npm ci
             npm run build
             pm2 restart all
-            echo "✅ Deployed to staging via marvinpinto/action-ssh"
+            echo "✅ Staging Deployed Successfully"
+          EOF
