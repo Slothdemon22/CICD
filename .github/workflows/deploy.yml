@@ -10,13 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 instance
+      - name: Debug inside EC2
         run: |
-          echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
-          chmod 600 ~/ssh_key
-          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "echo ✅ Connected as ubuntu"
-
-      - name: SSH Debug EC2
-        run: |
-             pwd && whoami && ls -la /home/ubuntu
+                  echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
+                  chmod 600 ~/ssh_key
+                  ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "pwd && whoami && ls -la /home/ubuntu"
 
