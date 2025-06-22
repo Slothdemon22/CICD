@@ -10,15 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug inside EC2
-        run: |
-                  echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
-                  chmod 600 ~/ssh_key
-                  ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "pwd && whoami && ls -la /home/ubuntu"
-                  echo "helllloooo"
-                  cd ~/CICD/http
-                  npm i
-                  npm run dev
+     - name: SSH Deploy HTTP project
+       run: |
+         echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
+         chmod 600 ~/ssh_key
+         ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "cd /home/ubuntu/CICD/http && npm install && npm run dev"
+
                   
 
 
