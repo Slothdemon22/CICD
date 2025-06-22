@@ -1,4 +1,4 @@
-name: Deploy HTTP Project via SSH
+name: SSH Deploy to HTTP Server
 
 on:
   push:
@@ -13,15 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
+      - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.TALHA_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 192.0.2.123 >> ~/.ssh/known_hosts
-        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.TALHA_KEY }}
 
-      - name: SSH into server and run commands
+      - name: SSH into server and run command
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@192.0.2.123 "echo '🟢 Connected to server!' && cd /home/ubuntu/http && ls -la"
-        shell: bash
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@192.0.2.123 "echo ✅ SSH connected && cd ~/http && ls -la"
