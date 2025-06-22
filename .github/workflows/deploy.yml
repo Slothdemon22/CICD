@@ -1,4 +1,4 @@
-name: 🚀 Deploy to Staging
+name: 🚀 Deploy to Staging (No Appleboy)
 
 on:
   push:
@@ -10,24 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout Code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: 📡 Deploy to Staging Server
-        uses: appleboy/ssh-action@v1.0.0
+      - name: 🚀 SSH & Deploy
+        uses: glenstack/ssh-action@v2
         with:
-          host: 3.25.103.227
-          username: ubuntu
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script: |
+          command: |
             cd /home/ubuntu/CICD
             git pull origin main
             npm ci
             npm run build
             pm2 restart all
-            echo "✅ Deployed to staging manually"
-
-          # Enable if you're using RSA key
-          use_insecure_cipher: true
-          cipher: aes256-cbc
+            echo "✅ Deployed to staging via Glenstack"
+          host: 3.25.103.227
+          username: ubuntu
+          privateKey: ${{ secrets.SSH_KEY }}
