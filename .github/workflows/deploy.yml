@@ -10,15 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH Deploy HTTP project
+      - name: SSH Deploy to EC2
         run: |
           echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
+
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "
-            cd /home/ubuntu/CICD &&
-            git pull origin main &&
-            cd http &&
+            cd /home/ubuntu &&
+
+            # Clone repo if not exists
+            if [ ! -d CICD ]; then
+              git clone https://github.com/Slothdemon22/CICD.git;
+            else
+              cd CICD &&
+              git reset --hard &&
+              git clean -fd &&
+              git pull origin main;
+            fi &&
+
+            # Enter project directory and build
+            cd /home/ubuntu/CICD/http &&
             npm install &&
             npm run build &&
-            pm2 start dist/index.js --name http-server || pm2 restart http-server
+
+            # PM2 process control
+            if pm2 describe http-server > /dev/null; then
+              echo '🔁 Reloading http-server';
+              pm2 reload http-server;
+            else
+              echo '🚀 Starting http-server';
+              pm2 start dist/index.js --name http-server;
+            fi &&
+
+            echo '✅ Deployed successfully'
           "
