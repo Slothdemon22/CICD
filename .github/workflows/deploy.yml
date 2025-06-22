@@ -1,4 +1,4 @@
-name: Build HTTP Project
+name: Deploy HTTP Project via SSH
 
 on:
   push:
@@ -6,21 +6,22 @@ on:
       - main
 
 jobs:
-  build-http:
+  deploy-http:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install and build inside http project
-        working-directory: ./http
+      - name: Setup SSH Key
         run: |
-          npm install
-          npm install typescript
-          npx tsc --noEmit
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TALHA_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 192.0.2.123 >> ~/.ssh/known_hosts
+        shell: bash
+
+      - name: SSH into server and run commands
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@192.0.2.123 "echo '🟢 Connected to server!' && cd /home/ubuntu/http && ls -la"
+        shell: bash
