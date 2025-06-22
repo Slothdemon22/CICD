@@ -1,4 +1,4 @@
-name: 🚀 Deploy to Staging (No Appleboy)
+name: 🚀 Deploy to Staging (Reliable SSH)
 
 on:
   push:
@@ -13,16 +13,17 @@ jobs:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: 🚀 SSH & Deploy
-        uses: glenstack/ssh-action@v2
+      - name: 🛜 Setup SSH and Deploy
+        uses: marvinpinto/action-ssh@v1.0.0
         with:
-          command: |
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-public-key: ""
+          ssh-host: ubuntu@3.25.103.227
+          ssh-port: 22
+          ssh-command: |
             cd /home/ubuntu/CICD
             git pull origin main
             npm ci
             npm run build
             pm2 restart all
-            echo "✅ Deployed to staging via Glenstack"
-          host: 3.25.103.227
-          username: ubuntu
-          privateKey: ${{ secrets.SSH_KEY }}
+            echo "✅ Deployed to staging via marvinpinto/action-ssh"
