@@ -1,4 +1,4 @@
-name: 🚀 Staging Deployment
+name: 🚀 Deploy to Staging
 
 on:
   push:
@@ -10,23 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout Code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: 🔐 Setup SSH Key
+      - name: 🔐 Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          printf "%s\n" "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 3.25.103.227 >> ~/.ssh/known_hosts
 
-      - name: 🚀 SSH & Deploy to Staging
+      - name: 🚀 Deploy to Staging via SSH
         run: |
-          ssh ubuntu@3.25.103.227 << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@3.25.103.227 << 'EOF'
             cd /home/ubuntu/CICD
             git pull origin main
             npm ci
             npm run build
             pm2 restart all
-            echo "✅ Staging Deployed Successfully"
+            echo "✅ Deployed to staging manually"
           EOF
