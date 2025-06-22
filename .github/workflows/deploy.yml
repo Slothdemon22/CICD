@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into server
+      - name: SSH into EC2 instance
         run: |
           echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
-          ssh -i ~/ssh_key -o StrictHostKeyChecking=no root@3.27.171.210 "echo ✅ Connected and ready"
+          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "echo ✅ Connected as ubuntu"
