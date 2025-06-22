@@ -1,15 +1,12 @@
-name: TypeScript Compile Check
+name: Build HTTP Project
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  tsc-build:
+  build-http:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # or '18' / '16' based on your project
+          node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Compile TypeScript
-        run: npx tsc --noEmit
+      - name: Install and build inside http project
+        working-directory: ./http
+        run: |
+          npm install
+          npx tsc --noEmit
