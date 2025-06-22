@@ -1,0 +1,28 @@
+name: 🚀 Deploy to Staging (No Secrets)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🧬 SSH Deploy to Staging
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 3.25.103.227         # Replace with your staging IP
+          username: ubuntu           # Replace with your staging user
+          key: ${{ secrets.SSH_KEY }}  # Only this needs to stay secure
+          script: |
+            cd /home/ubuntu/CICD
+            git pull origin main
+            npm ci
+            npm run build
+            pm2 restart all
+            echo "✅ Deployed to staging manually"
