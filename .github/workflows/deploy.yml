@@ -15,4 +15,6 @@ jobs:
           echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "echo ✅ Connected as ubuntu"
-          ls
+          cd /home/ubuntu/CICD/http
+          npm i 
+          npm run dev
