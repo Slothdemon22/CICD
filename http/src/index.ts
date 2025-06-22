@@ -11,7 +11,7 @@ app.use(express.json());
 // Sample route
 app.get('/', (_req, res) => {
   const timestamp = new Date().toISOString();
-  res.send(`🚀 Server live @ ${timestamp}`);
+  res.send(`🚀 Server live @ updated CICD`);
 });
 
 // Start server
