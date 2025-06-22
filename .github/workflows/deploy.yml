@@ -14,7 +14,7 @@ jobs:
        run: |
          echo "${{ secrets.TALHA_KEY }}" > ~/ssh_key
          chmod 600 ~/ssh_key
-         ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "cd /home/ubuntu/CICD/http && npm install && pm2 restart  http-server"
+         ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.27.171.210 "cd /home/ubuntu/CICD/http && npm install && npm run build && pm2 start dist/index.js --name http-server
 
                   
 
