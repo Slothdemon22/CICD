@@ -22,4 +22,5 @@ jobs:
         working-directory: ./http
         run: |
           npm install
+          npm install typescript
           npx tsc --noEmit
