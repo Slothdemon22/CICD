@@ -1,32 +1,28 @@
-name: Deploy to Staging
+name: TypeScript Compile Check
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  tsc-build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          printf "%s\n" "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 3.25.103.227 >> ~/.ssh/known_hosts
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # or '18' / '16' based on your project
 
-      - name: Deploy to staging server
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@3.25.103.227 << 'EOF'
-            cd ~/CICD
-            git pull origin main
-            npm ci
-            npm run build
-            pm2 restart all
-            echo "✅ Deployed to staging"
-          EOF
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile TypeScript
+        run: npx tsc --noEmit
