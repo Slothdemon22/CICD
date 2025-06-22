@@ -18,5 +18,5 @@ jobs:
 
       - name: SSH Debug EC2
         run: |
-             pwd && whoami && ls -la /home/ubuntu"
+             pwd && whoami && ls -la /home/ubuntu
 
